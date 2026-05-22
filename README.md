@@ -15,7 +15,8 @@
 - **In-App Model Downloading:** Directly download 6-bit or 8-bit quantized models from HuggingFace via the UI.
 - **Bilingual Interface:** Automatically detects your system language (Turkish or English) or lets you set it manually.
 
-https://raw.githubusercontent.com/mahmut-salih-cicek/apple-silicon-MLX-lab/refs/heads/main/img/ss1.png
+
+<a href=""><img src="[https://raw.githubusercontent.com/mahmut-salih-cicek/LogiTrack/main/logitrackSS/Screenshot_2025-12-10-12-27-34-79_143b81a2128d8037c2f5f14b667700cc.jpg]" width="200px"></a>
 
 ### Installation
 
