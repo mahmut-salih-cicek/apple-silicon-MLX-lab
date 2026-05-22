@@ -16,7 +16,9 @@
 - **Bilingual Interface:** Automatically detects your system language (Turkish or English) or lets you set it manually.
 
 
-<a href=""><img src="[https://raw.githubusercontent.com/mahmut-salih-cicek/LogiTrack/main/logitrackSS/Screenshot_2025-12-10-12-27-34-79_143b81a2128d8037c2f5f14b667700cc.jpg]" width="200px"></a>
+<img src="https://github.com/mahmut-salih-cicek/apple-silicon-MLX-lab/blob/main/img/ss1.png?raw=true" width="800">
+
+<img src="https://github.com/mahmut-salih-cicek/apple-silicon-MLX-lab/blob/main/img/ss2.png?raw=true" width="800">
 
 ### Installation
 
