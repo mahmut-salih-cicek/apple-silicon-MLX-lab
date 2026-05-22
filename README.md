@@ -1,4 +1,4 @@
-# Chatterbox MLX — Final V9 Fast Stable 🎙️
+# Chatterbox MLX — Fast Stable 🎙️
 
 *[🇹🇷 Türkçe versiyonu aşağıdadır](#türkçe-tr)*
 

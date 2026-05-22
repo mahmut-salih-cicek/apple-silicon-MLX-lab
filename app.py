@@ -16,9 +16,10 @@ sys_lang = locale.getdefaultlocale()[0]
 if sys_lang and sys_lang.startswith("tr"):
     UI_LANG = "tr"
 
-if os.path.exists("app_config.json"):
+CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "app_config.json")
+if os.path.exists(CONFIG_PATH):
     try:
-        with open("app_config.json", "r") as f:
+        with open(CONFIG_PATH, "r") as f:
             _cfg = json.load(f)
             if "ui_lang" in _cfg:
                 UI_LANG = _cfg["ui_lang"]
@@ -26,17 +27,15 @@ if os.path.exists("app_config.json"):
         pass
 
 def save_app_config(lang):
-    with open("app_config.json", "w") as f:
+    with open(CONFIG_PATH, "w") as f:
         json.dump({"ui_lang": lang}, f)
-    return "Uygulama dilini değiştirdiniz, lütfen değişikliklerin geçerli olması için programı yeniden başlatın." if lang == "tr" else "Language changed, please restart the application to apply changes."
+    return "Uygulama dilini değiştirdiniz. Lütfen terminalde CTRL+C basıp programı durdurun ve tekrar 'python app.py' yazarak başlatın." if lang == "tr" else "Language changed. Please go to the terminal, press CTRL+C to stop, and run 'python app.py' again."
 
 TR_DICT = {
     "title": "🎙️ Chatterbox MLX — Final V9 Fast Stable",
-    "description": "M1 / Apple Silicon için Türkçe uzun hikaye TTS + voice cloning.
-V9 hedefi: hızlı/stabil MLX üretim, doğal vurgu, kontrollü bekleme ve model seçimi.",
+    "description": "M1 / Apple Silicon için Türkçe uzun hikaye TTS + voice cloning.\\nV9 hedefi: hızlı/stabil MLX üretim, doğal vurgu, kontrollü bekleme ve model seçimi.",
     "model_selection": "🤖 Model Seçimi",
-    "model_selection_desc": "`MODEL_ROOT` altında bulunan `chatterbox-*` klasörleri otomatik listelenir.
-Örn: `chatterbox-6bit`, `chatterbox-8bit`. Modeli değiştirince generate sırasında otomatik yüklenir.",
+    "model_selection_desc": "`MODEL_ROOT` altında bulunan `chatterbox-*` klasörleri otomatik listelenir.\\nÖrn: `chatterbox-6bit`, `chatterbox-8bit`. Modeli değiştirince generate sırasında otomatik yüklenir.",
     "model_dropdown_label": "MLX Model Klasörü",
     "model_dropdown_info": "Modeli listeden seçin. Eğer yoksa 'Model İndir' kısmından indirebilirsiniz.",
     "load_model_btn": "🤖 Seçili Modeli Yükle",
@@ -87,11 +86,9 @@ V9 hedefi: hızlı/stabil MLX üretim, doğal vurgu, kontrollü bekleme ve model
 
 EN_DICT = {
     "title": "🎙️ Chatterbox MLX — Final V9 Fast Stable",
-    "description": "Long story TTS + voice cloning for M1 / Apple Silicon.
-V9 target: fast/stable MLX generation, natural prosody, controlled pauses, and model selection.",
+    "description": "Long story TTS + voice cloning for M1 / Apple Silicon.\\nV9 target: fast/stable MLX generation, natural prosody, controlled pauses, and model selection.",
     "model_selection": "🤖 Model Selection",
-    "model_selection_desc": "`chatterbox-*` folders under `MODEL_ROOT` are listed automatically.
-E.g.: `chatterbox-6bit`, `chatterbox-8bit`. The model will be loaded automatically during generation.",
+    "model_selection_desc": "`chatterbox-*` folders under `MODEL_ROOT` are listed automatically.\\nE.g.: `chatterbox-6bit`, `chatterbox-8bit`. The model will be loaded automatically during generation.",
     "model_dropdown_label": "MLX Model Folder",
     "model_dropdown_info": "Select the model. If you don't have one, you can download it from 'Download Model' section.",
     "load_model_btn": "🤖 Load Selected Model",
@@ -143,6 +140,57 @@ E.g.: `chatterbox-6bit`, `chatterbox-8bit`. The model will be loaded automatical
 def _t(key):
     return TR_DICT.get(key, key) if UI_LANG == "tr" else EN_DICT.get(key, key)
 
+def _t_msg(msg):
+    if UI_LANG == "tr": return msg
+    reps = {
+        "Model klasörü bulunamadı": "Model folder not found",
+        "Model zaten yüklü": "Model already loaded",
+        "Model yüklenemedi": "Model failed to load",
+        "Model yüklendi": "Model loaded",
+        "Model listesi yenilendi. Bulunan model sayısı": "Model list refreshed. Models found",
+        "Lütfen sentezlenecek bir metin girin.": "Please enter text to synthesize.",
+        "Metin yok.": "No text provided.",
+        "Metin parçalanamadı.": "Text could not be chunked.",
+        "Sentezleme Tamamlandı!": "Synthesis Complete!",
+        "Önce ses üretmelisin. Orijinal WAV bulunamadı.": "You must generate audio first. Original WAV not found.",
+        "Ses dosyası boş görünüyor.": "Audio file seems empty.",
+        "YouTube Master WAV hazır.": "YouTube Master WAV ready.",
+        "Bu işlem yeniden TTS üretmez; sadece mevcut WAV seviyesini güvenli normalize eder.": "This process does not regenerate TTS; it only safely normalizes the existing WAV.",
+        "Dosya:": "File:",
+        "Preset adı gir.": "Enter preset name.",
+        "Preset kaydedildi:": "Preset saved:",
+        "Preset yüklendi:": "Preset loaded:",
+        "Silinecek preset bulunamadı.": "Preset to delete not found.",
+        "Preset silindi:": "Preset deleted:",
+        "Preset bulunamadı.": "Preset not found.",
+        "Referans ses:": "Reference audio:",
+        "Yok": "none",
+        "yok": "none",
+        "Hata oluştu:": "Error occurred:",
+        "Üretim süresi:": "Generation time:",
+        "Ses süresi:": "Audio duration:",
+        "Parça sayısı:": "Chunk count:",
+        "Mod:": "Mode:",
+        "Dil:": "Language:",
+        "inference + normalize + concat": "inference + normalize + concat",
+        "sadece final WAV/chunk WAV yazma köprüsü": "only final WAV/chunk WAV write bridge",
+        "YouTube Master WAV butonu mevcut WAV için güvenli seviye dosyası hazırlar": "YouTube Master WAV button prepares safe level file for existing WAV",
+        "Olası sorunlu chunklar:": "Possible problematic chunks:",
+        "üretildi, beklenen üst limit": "generated, expected upper limit",
+        "karakter": "characters",
+        "Chunk analizi": "Chunk analysis",
+        "Toplam karakter:": "Total characters:",
+        "Ortalama chunk:": "Average chunk:",
+        "En kısa / en uzun:": "Shortest / longest:",
+        "İlk 12 chunk:": "First 12 chunks:",
+        "daha": "more",
+        "chunk": "chunk",
+        "Adım geçiniz": "Skip step",
+    }
+    for tr, en in reps.items():
+        msg = msg.replace(tr, en)
+    return msg
+
 def download_model_hf(repo_id, local_dir_name):
     try:
         local_dir = os.path.join(MODEL_ROOT, local_dir_name)
@@ -151,12 +199,35 @@ def download_model_hf(repo_id, local_dir_name):
     except Exception as e:
         return f"❌ Error: {str(e)}"
 
-import gradio as gr
-import soundfile as sf
-import numpy as np
-import mlx.core as mx
-from mlx_audio.tts.utils import load_model
-from mlx_audio.tts.generate import load_audio
+import sys
+import subprocess
+
+def _install_requirements():
+    req_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "requirements.txt")
+    if os.path.exists(req_file):
+        print("Eksik kütüphaneler tespit edildi. Otomatik olarak yükleniyor (requirements.txt)...")
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "-q", "-r", req_file])
+            print("Yükleme tamamlandı. Program başlatılıyor...")
+        except Exception as e:
+            print(f"Otomatik yükleme sırasında bir hata oluştu: {e}")
+
+try:
+    import gradio as gr
+    import soundfile as sf
+    import numpy as np
+    import mlx.core as mx
+    from mlx_audio.tts.utils import load_model
+    from mlx_audio.tts.generate import load_audio
+except ImportError:
+    _install_requirements()
+    # Tekrar deniyoruz
+    import gradio as gr
+    import soundfile as sf
+    import numpy as np
+    import mlx.core as mx
+    from mlx_audio.tts.utils import load_model
+    from mlx_audio.tts.generate import load_audio
 
 # ============================================================
 # Chatterbox MLX Final V9 Fast Stable Model Selector — Best Practice Edition
@@ -307,10 +378,10 @@ def _ensure_model_loaded(model_path: str | None):
     selected_path = str(model_path or MODEL_PATH).strip() or MODEL_PATH
     with _model_lock:
         if model is not None and active_model_path == selected_path:
-            return model, active_model_path, f"✅ Model zaten yüklü: {os.path.basename(selected_path)}"
+            return model, active_model_path, _t_msg(f"✅ Model zaten yüklü: {os.path.basename(selected_path)}")
 
         if not os.path.isdir(selected_path):
-            raise FileNotFoundError(f"Model klasörü bulunamadı: {selected_path}")
+            raise FileNotFoundError(_t_msg(f"Model klasörü bulunamadı: {selected_path}"))
 
         log("=" * 60)
         log("🚀 Chatterbox MLX Final V9 - Fast Stable Model Selector")
@@ -320,7 +391,7 @@ def _ensure_model_loaded(model_path: str | None):
         loaded_model = _submit_to_main_thread(_load_model_on_main_thread, selected_path)
         model = loaded_model
         active_model_path = selected_path
-        msg = f"✅ Model yüklendi: {os.path.basename(selected_path)} ({time.time() - load_t0:.1f}s) | SR={loaded_model.sample_rate} Hz"
+        msg = _t_msg(f"✅ Model yüklendi: {os.path.basename(selected_path)} ({time.time() - load_t0:.1f}s) | SR={loaded_model.sample_rate} Hz")
         log(msg)
         log("=" * 60)
         return model, active_model_path, msg
@@ -331,13 +402,13 @@ def load_selected_model_ui(model_path: str):
         _model, _path, msg = _ensure_model_loaded(model_path)
         return msg
     except Exception as e:
-        return f"❌ Model yüklenemedi: {e}"
+        return _t_msg(f"❌ Model yüklenemedi: {e}")
 
 
 def refresh_model_list_ui(current_path: str | None):
     choices = _discover_model_paths()
     value = current_path if current_path in choices else (choices[0] if choices else MODEL_PATH)
-    return gr.update(choices=choices, value=value), f"🔄 Model listesi yenilendi. Bulunan model sayısı: {len(choices)}"
+    return gr.update(choices=choices, value=value), _t_msg(f"🔄 Model listesi yenilendi. Bulunan model sayısı: {len(choices)}")
 
 
 # ============================================================
@@ -1199,12 +1270,12 @@ log("=" * 60)
 # ============================================================
 def chunk_preview(metin, chunk_size, mode):
     if not metin or not metin.strip():
-        return "⚠️ Metin yok."
+        return _t_msg("⚠️ Metin yok.")
     chunks = _split_text_for_tts(metin, int(chunk_size), mode)
     lengths = [len(c) for c in chunks]
     total_chars = sum(lengths)
     preview_lines = []
-    preview_lines.append(f"✅ Chunk analizi")
+    preview_lines.append(_t_msg(f"✅ Chunk analizi"))
     preview_lines.append(f"Mod: {mode}")
     preview_lines.append(f"Toplam karakter: {len(_normalize_text(metin))}")
     preview_lines.append(f"Chunk sayısı: {len(chunks)}")
@@ -1216,7 +1287,7 @@ def chunk_preview(metin, chunk_size, mode):
         preview_lines.append(f"{idx:02d}. [{len(ch)}] {ch[:150]}{'...' if len(ch) > 150 else ''}")
     if len(chunks) > 12:
         preview_lines.append(f"... +{len(chunks) - 12} chunk daha")
-    return "\n".join(preview_lines)
+    return _t_msg("\n".join(preview_lines))
 
 
 def hazirla_metin(metin):
@@ -1231,7 +1302,7 @@ def hazirla_ve_onizle(metin, chunk_size, mode):
     Metnin duygu/vurgusunu yazıda korur; model girişinde punc_norm ayrıca uygulanır.
     """
     if not metin or not metin.strip():
-        return "", "⚠️ Metin yok."
+        return "", _t_msg("⚠️ Metin yok.")
 
     prepared = _prepare_text_for_chatterbox(metin)
     preview = chunk_preview(prepared, int(chunk_size), mode)
@@ -1253,13 +1324,13 @@ def create_youtube_master_wav():
     Gerçek model kalitesini artırmaz; YouTube'a hazır, tutarlı seviye verir.
     """
     if not os.path.exists(OUTPUT_PATH):
-        return None, "⚠️ Önce ses üretmelisin. Orijinal WAV bulunamadı."
+        return None, _t_msg("⚠️ Önce ses üretmelisin. Orijinal WAV bulunamadı.")
 
     audio, sr = sf.read(OUTPUT_PATH, dtype="float32", always_2d=False)
     audio = np.asarray(audio, dtype=np.float32)
 
     if audio.size == 0:
-        return None, "⚠️ Ses dosyası boş görünüyor."
+        return None, _t_msg("⚠️ Ses dosyası boş görünüyor.")
 
     # DC offset temizliği: çok hafif, ses karakterini değiştirmez.
     if audio.ndim == 1:
@@ -1303,7 +1374,7 @@ def ses_uret(
         if not selected_model_path or not os.path.exists(selected_model_path):
             return None, _t("model_not_selected_error")
         if not metin or not metin.strip():
-            return None, "⚠️ Lütfen sentezlenecek bir metin girin."
+            return None, _t_msg("⚠️ Lütfen sentezlenecek bir metin girin.")
 
         active_model, active_model_path, model_msg = _ensure_model_loaded(selected_model_path)
 
@@ -1354,7 +1425,7 @@ def ses_uret(
 
         chunks = _split_text_for_tts(metin, int(chunk_size), splitter_mode)
         if not chunks:
-            return None, "⚠️ Metin parçalanamadı."
+            return None, _t_msg("⚠️ Metin parçalanamadı.")
 
         # Bilinçli gerçek beklemeler: [[pause:short]], [[pause:medium]], [[pause:long]]
         # Marker yoksa parça sayısı değişmez; performans düşmez.
@@ -1470,14 +1541,14 @@ def ses_uret(
             "🌉 NumPy: sadece final WAV/chunk WAV yazma köprüsü",
             "🎚️ Opsiyonel: YouTube Master WAV butonu mevcut WAV için güvenli seviye dosyası hazırlar",
         ]
-        info = chr(10).join(info_lines) + problem_text
+        info = _t_msg(chr(10).join(info_lines) + problem_text)
         return OUTPUT_PATH, info
 
     except Exception as e:
         import traceback
         log(f"   ❌ HATA: {e}")
         traceback.print_exc()
-        return None, f"❌ Hata oluştu: {str(e)}"
+        return None, _t_msg(f"❌ Hata oluştu: {str(e)}")
 
 
 # ============================================================
@@ -1539,7 +1610,7 @@ def save_current_preset(
 ):
     preset_name = (preset_name or "").strip()
     if not preset_name:
-        return gr.update(choices=_preset_choices()), "⚠️ Preset adı gir."
+        return gr.update(choices=_preset_choices()), _t_msg("⚠️ Preset adı gir.")
 
     presets = _load_presets()
     saved_ref = _copy_reference_audio_for_preset(preset_name, referans_ses_yolu)
@@ -1567,7 +1638,7 @@ def save_current_preset(
 
     return (
         gr.update(choices=_preset_choices(), value=preset_name),
-        "✅ Preset kaydedildi: " + str(preset_name) + chr(10) + "🎵 Referans ses: " + str(saved_ref or "yok"),
+        _t_msg("✅ Preset kaydedildi: " + str(preset_name) + chr(10) + "🎵 Referans ses: " + str(saved_ref or "yok")),
     )
 
 
@@ -1587,7 +1658,7 @@ def load_selected_preset(preset_name):
             "Doğal Hikaye",
             False,
             False,
-            "⚠️ Preset bulunamadı.",
+            _t_msg("⚠️ Preset bulunamadı."),
         )
         return defaults
 
@@ -1609,14 +1680,14 @@ def load_selected_preset(preset_name):
         p.get("processing_mode", "Doğal Hikaye"),
         bool(p.get("safety_retry", False)),
         bool(p.get("save_chunks", False)),
-        "✅ Preset yüklendi: " + str(preset_name) + chr(10) + "🎵 Referans ses: " + str(ref or "yok"),
+        _t_msg("✅ Preset yüklendi: " + str(preset_name) + chr(10) + "🎵 Referans ses: " + str(ref or "yok")),
     )
 
 
 def delete_selected_preset(preset_name):
     presets = _load_presets()
     if not preset_name or preset_name not in presets:
-        return gr.update(choices=_preset_choices(), value=None), "⚠️ Silinecek preset bulunamadı."
+        return gr.update(choices=_preset_choices(), value=None), _t_msg("⚠️ Silinecek preset bulunamadı.")
 
     ref = presets[preset_name].get("reference_audio", "")
     if ref and os.path.exists(ref):
@@ -1627,7 +1698,7 @@ def delete_selected_preset(preset_name):
 
     del presets[preset_name]
     _save_presets(presets)
-    return gr.update(choices=_preset_choices(), value=None), f"🗑️ Preset silindi: {preset_name}"
+    return gr.update(choices=_preset_choices(), value=None), _t_msg(f"🗑️ Preset silindi: {preset_name}")
 
 
 # ============================================================
