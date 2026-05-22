@@ -1,0 +1,5 @@
+gradio>=4.0.0
+soundfile
+numpy
+mlx
+huggingface_hub
